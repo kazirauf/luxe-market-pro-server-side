@@ -37,6 +37,26 @@ async function run() {
 }
 run().catch(console.dir);
 
+const tabsCategoryCollections = client.db('luxeMarketProCollection').collection('CategoryNameCollection');
+
+app.get('/tabsCategory', async(req, res) => {
+    const cursor = tabsCategoryCollections.find()
+    const result = await cursor.toArray();
+    res.send(result)
+  })
+
+
+  app.get('/tabs/:name', async(req, res) => {
+    const name = req.params.name;
+    const query = {name: name}
+    const result = await tabsCategoryCollections.find(query).toArray();
+    res.send(result)
+
+})
+
+
+
+
 
 
 
