@@ -1,6 +1,6 @@
 const express = require('express');
 const cors = require('cors');
-const { MongoClient, ServerApiVersion } = require('mongodb');
+const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 require('dotenv').config()
 const app = express();
 const port = process.env.PORT || 5000;
@@ -38,6 +38,7 @@ async function run() {
 run().catch(console.dir);
 
 const tabsCategoryCollections = client.db('luxeMarketProCollection').collection('CategoryNameCollection');
+const addJobsCollections = client.db('luxeMarketProCollection').collection('addJobsCollection');
 
 app.get('/tabsCategory', async(req, res) => {
     const cursor = tabsCategoryCollections.find()
@@ -45,13 +46,25 @@ app.get('/tabsCategory', async(req, res) => {
     res.send(result)
   })
 
+  
 
-  app.get('/tabs/:name', async(req, res) => {
-    const name = req.params.name;
-    const query = {name: name}
-    const result = await tabsCategoryCollections.find(query).toArray();
+app.post('/addJobs', async(req, res) => {
+    const newJobs = req.body;
+    const result = await addJobsCollections.insertOne(newJobs)
     res.send(result)
+ })
 
+ app.get('/tabs/:category', async(req, res) => {
+  const name = req.params.category;
+  const query = {category: name}
+  const result = await addJobsCollections.find(query).toArray();
+  res.send(result)
+
+})
+
+app.get("/allJobs", async(req, res) => {
+  const allJobs = await addJobsCollections.find().toArray()
+  res.send(allJobs)
 })
 
 
