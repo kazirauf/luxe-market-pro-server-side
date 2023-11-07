@@ -65,6 +65,26 @@ app.post('/jobsBids', async(req, res) => {
   const result = await addJobsCollections.findOne(query);
   res.send(result);
 })
+app.put('/allJobs/:id', async (req, res) => {
+  const id = req.params.id;
+  const filter = { _id: new ObjectId(id) }
+  const option = { upsert: true }
+  const updatedProducts = req.body;
+  const products = {
+      $set: {
+          email: updatedProducts.email,
+          jobTitle: updatedProducts.jobTitle,
+          deadline: updatedProducts.deadline,
+          description: updatedProducts.description,
+          category: updatedProducts.category,
+          minimumPrice: updatedProducts.minimumPrice,
+          maximumPrice: updatedProducts.maximumPrice,
+
+      }
+  }
+  const result = await addJobsCollections.updateOne(filter, products, option);
+  res.send(result)
+})
 
 app.get('/myPost',  async (req, res) => {
   let query = {};
@@ -74,7 +94,13 @@ app.get('/myPost',  async (req, res) => {
   const result = await addJobsCollections.find(query).toArray();
   res.send(result);
 })
-
+app.delete('/myPost/:id', async(req, res) => {
+  
+  const id = req.params.id;
+  const query = {_id: new ObjectId(id)}
+  const result = await addJobsCollections.deleteOne(query)
+  res.send(result);
+ })
 
  app.get('/tabs/:category', async(req, res) => {
   const name = req.params.category;
