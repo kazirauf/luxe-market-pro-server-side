@@ -126,6 +126,15 @@ app.get('/jobBids', async(req, res) => {
   const result = await JobsBidsCollection.find(query).toArray();
   res.send(result);
 })
+// for bids request page
+app.get('/bidRequest', async(req, res) => {
+  let query = {};
+  if (req.query?.buyer_email) {
+      query = { buyer_email: req.query.buyer_email }
+  }
+  const result = await JobsBidsCollection.find(query).toArray();
+  res.send(result);
+})
 
 
 
