@@ -39,6 +39,7 @@ run().catch(console.dir);
 
 const tabsCategoryCollections = client.db('luxeMarketProCollection').collection('CategoryNameCollection');
 const addJobsCollections = client.db('luxeMarketProCollection').collection('addJobsCollection');
+const JobsBidsCollection = client.db('luxeMarketProCollection').collection('JobsBidsCollection');
 
 app.get('/tabsCategory', async(req, res) => {
     const cursor = tabsCategoryCollections.find()
@@ -53,6 +54,27 @@ app.post('/addJobs', async(req, res) => {
     const result = await addJobsCollections.insertOne(newJobs)
     res.send(result)
  })
+app.post('/jobsBids', async(req, res) => {
+    const newJobsBids = req.body;
+    const result = await JobsBidsCollection.insertOne(newJobsBids)
+    res.send(result)
+ })
+ app.get('/allJobs/:id', async(req, res) => {
+  const id = req.params.id;
+  const query = { _id: new ObjectId(id)};
+  const result = await addJobsCollections.findOne(query);
+  res.send(result);
+})
+
+app.get('/myPost',  async (req, res) => {
+  let query = {};
+  if (req.query?.email) {
+      query = { email: req.query.email }
+  }
+  const result = await addJobsCollections.find(query).toArray();
+  res.send(result);
+})
+
 
  app.get('/tabs/:category', async(req, res) => {
   const name = req.params.category;
