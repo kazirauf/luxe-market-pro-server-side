@@ -40,7 +40,7 @@ run().catch(console.dir);
 const tabsCategoryCollections = client.db('luxeMarketProCollection').collection('CategoryNameCollection');
 const addJobsCollections = client.db('luxeMarketProCollection').collection('addJobsCollection');
 const JobsBidsCollection = client.db('luxeMarketProCollection').collection('JobsBidsCollection');
-
+// tabs
 app.get('/tabsCategory', async(req, res) => {
     const cursor = tabsCategoryCollections.find()
     const result = await cursor.toArray();
@@ -54,17 +54,27 @@ app.post('/addJobs', async(req, res) => {
     const result = await addJobsCollections.insertOne(newJobs)
     res.send(result)
  })
-app.post('/jobsBids', async(req, res) => {
-    const newJobsBids = req.body;
-    const result = await JobsBidsCollection.insertOne(newJobsBids)
-    res.send(result)
- })
+ app.get('/tabs/:category', async(req, res) => {
+  const name = req.params.category;
+  const query = {category: name}
+  const result = await addJobsCollections.find(query).toArray();
+  res.send(result)
+
+})
+
+app.get("/allJobs", async(req, res) => {
+  const allJobs = await addJobsCollections.find().toArray()
+  res.send(allJobs)
+})
+
+
  app.get('/allJobs/:id', async(req, res) => {
   const id = req.params.id;
   const query = { _id: new ObjectId(id)};
   const result = await addJobsCollections.findOne(query);
   res.send(result);
 })
+//for the client my post page
 app.put('/allJobs/:id', async (req, res) => {
   const id = req.params.id;
   const filter = { _id: new ObjectId(id) }
@@ -94,6 +104,7 @@ app.get('/myPost',  async (req, res) => {
   const result = await addJobsCollections.find(query).toArray();
   res.send(result);
 })
+
 app.delete('/myPost/:id', async(req, res) => {
   
   const id = req.params.id;
@@ -101,19 +112,21 @@ app.delete('/myPost/:id', async(req, res) => {
   const result = await addJobsCollections.deleteOne(query)
   res.send(result);
  })
-
- app.get('/tabs/:category', async(req, res) => {
-  const name = req.params.category;
-  const query = {category: name}
-  const result = await addJobsCollections.find(query).toArray();
+//  for my bids page
+app.post('/jobsBids', async(req, res) => {
+  const newJobsBids = req.body;
+  const result = await JobsBidsCollection.insertOne(newJobsBids)
   res.send(result)
-
+})
+app.get('/jobBids', async(req, res) => {
+  let query = {};
+  if (req.query?.email) {
+      query = { email: req.query.email }
+  }
+  const result = await JobsBidsCollection.find(query).toArray();
+  res.send(result);
 })
 
-app.get("/allJobs", async(req, res) => {
-  const allJobs = await addJobsCollections.find().toArray()
-  res.send(allJobs)
-})
 
 
 
