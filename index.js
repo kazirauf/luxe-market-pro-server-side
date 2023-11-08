@@ -161,7 +161,10 @@ app.put('/jobsBids/:id', async (req, res) => {
 })
 
 app.get('/myPost', verifyToken, logger,  async (req, res) => {
-  
+  if(req.query.email !== req.user.email){
+    return res.status(403).send({message: 'forbidden access'})
+}
+
   let query = {};
   if (req.query?.email) {
       query = { email: req.query.email }
@@ -199,7 +202,9 @@ app.get('/jobBids', logger, verifyToken, async(req, res) => {
 })
 // for bids request page
 app.get('/bidRequest', logger, verifyToken, async(req, res) => {
-
+  if(req.query.email !== req.user.buyer_email){
+    return res.status(403).send({message: 'forbidden access'})
+}
   let query = {};
   if (req.query?.buyer_email) {
       query = { buyer_email: req.query.buyer_email }
