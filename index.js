@@ -9,8 +9,10 @@ const port = process.env.PORT || 5000;
 
 app.use(cors({
   origin: [
+    
      "https://luxe-market-pro.web.app"
   ],
+  
   credentials: true
 }));
 app.use(express.json())
@@ -53,11 +55,11 @@ const verifyToken = async (req, res, next) => {
 async function run() {
   try {
     // Connect the client to the server	(optional starting in v4.7)
-    await client.connect();
+    // await client.connect();
     // Send a ping to confirm a successful connection
     
-    await client.db("admin").command({ ping: 1 });
-    console.log("Pinged your deployment. You successfully connected to MongoDB!");
+    // await client.db("admin").command({ ping: 1 });
+    // console.log("Pinged your deployment. You successfully connected to MongoDB!");
   } finally {
     // Ensures that the client will close when you finish/error
     // await client.close();
@@ -197,7 +199,7 @@ app.get('/jobBids', logger, verifyToken, async(req, res) => {
   if (req.query?.email) {
       query = { email: req.query.email }
   }
-  const result = await JobsBidsCollection.find(query).toArray();
+  const result = await JobsBidsCollection.find(query).sort({"status": 1}).toArray();
   res.send(result);
 })
 // for bids request page
@@ -209,7 +211,7 @@ app.get('/bidRequest', logger, verifyToken, async(req, res) => {
   if (req.query?.buyer_email) {
       query = { buyer_email: req.query.buyer_email }
   }
-  const result = await JobsBidsCollection.find(query).toArray();
+  const result = await JobsBidsCollection.find(query).sort({"status": 1}).toArray();
   res.send(result);
 })
 
